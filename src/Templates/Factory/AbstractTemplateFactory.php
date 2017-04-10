@@ -11,7 +11,19 @@ abstract class AbstractTemplateFactory implements TemplateFactoryInterface
      * @return QuerySpecificationsTemplateInterface $template
      */
     public function create(){
-        $query = $this -> getBaseQuery();
+        $request = app(\Illuminate\Http\Request::class);
+
+        //We need to limit the results so it don't go search 1 million rows
+        $limit = $request->input('limit', 1000);
+        $request ->offsetUnset('limit');
+
+        if($limit) {
+            $query = $this -> getBaseQuery()->limit($limit);
+        }
+        //0 means unlimited results, used on download excel on model search page
+        else if ($limit == 0) {
+            $query = $this -> getBaseQuery();
+        }
 
         $template = new Template( $query );
         $template -> setAvailableJoinClauses( $this -> getAvailableJoinClauses() );
