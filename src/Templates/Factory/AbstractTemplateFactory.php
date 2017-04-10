@@ -15,7 +15,6 @@ abstract class AbstractTemplateFactory implements TemplateFactoryInterface
 
         //We need to limit the results so it don't go search 1 million rows
         $limit = $request->input('limit', 1000);
-        $request ->offsetUnset('limit');
 
         if($limit) {
             $query = $this -> getBaseQuery()->limit($limit);
